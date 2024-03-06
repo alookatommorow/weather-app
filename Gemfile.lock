@@ -105,6 +105,9 @@ GEM
     ffi (1.16.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.3)
       concurrent-ruby (~> 1.0)
       racc (~> 1.7)
@@ -130,6 +133,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.22.2)
     msgpack (1.7.2)
+    multi_xml (0.6.0)
     mutex_m (0.2.0)
     net-imap (0.4.10)
       date
@@ -310,6 +314,7 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
+  httparty
   jbuilder
   puma (>= 5.0)
   rails (~> 7.1.3, >= 7.1.3.2)
