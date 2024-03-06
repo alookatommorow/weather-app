@@ -1,0 +1,26 @@
+AllCops:
+  Exclude:
+    - "vendor/**/*"
+    - "bin/**/*"
+    - "tmp/**/*"
+    - "node_modules/**/*"
+  DisplayCopNames: true
+  StyleGuideCopsOnly: false
+
+Metrics/AbcSize:
+  Enabled: false
+  Exclude:
+    - spec/**/*
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
