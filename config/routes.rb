@@ -6,5 +6,11 @@ Rails.application.routes.draw do
   # get 'up' => 'rails/health#show', as: :rails_health_check
 
   # Defines the root path route ("/")
-  root 'root#show'
+  root 'root#home'
+
+  namespace :api do
+    resource :weather, only: [], controller: 'weather' do
+      get 'forecast'
+    end
+  end
 end
