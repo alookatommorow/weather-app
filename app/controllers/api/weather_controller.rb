@@ -1,6 +1,6 @@
 module Api
   class WeatherController < ApplicationController
-    CACHE_PREFIX = 'weather_api:forecast'.freeze
+    FORECAST_CACHE_PREFIX = 'weather_api:forecast'.freeze
     include ErrorHandler
 
     def forecast
@@ -18,12 +18,17 @@ module Api
       WeatherApi::Forecast.new(query: query_params).fetch
     end
 
+    def forecast_cache_key
+      return if params[:zip_code].blank?
+
+      "#{FORECAST_CACHE_PREFIX}:#{params[:zip_code]}"
+    end
+
     def cached_api_forecast
-      return api_forecast if params[:zip_code].blank?
+      return api_forecast if forecast_cache_key.blank?
 
       @cache_hit = true
-
-      Rails.cache.fetch("#{CACHE_PREFIX}:#{params[:zip_code]}", expires_in: 30.minutes) do
+      Rails.cache.fetch(forecast_cache_key, expires_in: 30.minutes) do
         @cache_hit = false
         api_forecast
       end
