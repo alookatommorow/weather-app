@@ -3,24 +3,24 @@ require 'rails_helper'
 RSpec.describe WeatherApi::Forecast do
   describe '#forecast' do
     let(:query) { '33.1872,-117.564' }
-    let(:subject) { described_class.new(query:).fetch }
-
-    it 'returns parsed json response from weather api' do
-      response_mock = instance_double(HTTParty::Response)
-      json_mock = {
-        'location' => { 'name' => 'Oakland' },
+    let(:response_mock) { instance_double(HTTParty::Response) }
+    let(:json_mock) do
+      {
         'forecast' => {
-          'forecastday' => [
-            {
-              'date' => '2024-03-06',
-              'day' => { 'maxtemp_f' => 57.7 }
-            }
-          ]
+          'forecastday' => [{ 'day' => { 'maxtemp_f' => 57.7 } }]
         }
       }
+    end
 
+    let(:subject) { described_class.new(query:).fetch! }
+
+    before do
       allow(described_class).to receive(:get).and_return(response_mock)
       allow(response_mock).to receive(:parsed_response).and_return(json_mock)
+    end
+
+    it 'returns parsed json response from weather api' do
+      allow(response_mock).to receive(:success?).and_return true
 
       subject
 
@@ -34,6 +34,14 @@ RSpec.describe WeatherApi::Forecast do
         }
       )
       expect(subject).to eq json_mock
+    end
+
+    context 'with api failure' do
+      it 'returns parsed json response from weather api' do
+        allow(response_mock).to receive(:success?).and_return false
+
+        expect { subject }.to raise_error WeatherApi::FetchError
+      end
     end
   end
 end

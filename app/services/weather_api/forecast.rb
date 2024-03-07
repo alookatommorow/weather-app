@@ -3,8 +3,12 @@ module WeatherApi
     PATH = '/forecast.json'.freeze
     FORECAST_DAYS = 3
 
-    def fetch
-      self.class.get(PATH, options).parsed_response
+    def fetch!
+      response = self.class.get(PATH, options)
+
+      return response.parsed_response if response.success?
+
+      raise ::WeatherApi::FetchError, 'Unable to fetch weather'
     end
 
     private

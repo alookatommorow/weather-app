@@ -6,6 +6,8 @@ module Api
     def forecast
       json = cached_api_forecast.merge(cache_hit: @cache_hit.present?)
       render json:
+    rescue WeatherApi::FetchError => e
+      render json: { message: e.message }, status: :internal_server_error
     end
 
     private
@@ -15,7 +17,7 @@ module Api
     end
 
     def api_forecast
-      WeatherApi::Forecast.new(query: query_params).fetch
+      WeatherApi::Forecast.new(query: query_params).fetch!
     end
 
     def forecast_cache_key

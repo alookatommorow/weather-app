@@ -1,4 +1,6 @@
 module WeatherApi
+  class FetchError < StandardError; end
+
   class Base
     include HTTParty
     base_uri 'http://api.weatherapi.com/v1'

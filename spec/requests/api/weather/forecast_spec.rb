@@ -14,7 +14,7 @@ RSpec.describe '/api/weather' do
 
     before do
       allow(WeatherApi::Forecast).to receive(:new).with(query:).and_return(forecast_mock)
-      allow(forecast_mock).to receive(:fetch).and_return(json_mock)
+      allow(forecast_mock).to receive(:fetch!).and_return(json_mock)
     end
 
     it 'returns weather json' do
@@ -35,6 +35,20 @@ RSpec.describe '/api/weather' do
 
         expect(parsed_response['message']).to eq 'One or more parameters missing'
         expect(response).to have_http_status :bad_request
+      end
+    end
+
+    context 'when fetch fails' do
+      it 'returns 500 with error message' do
+        error_message = 'Fetch failed'
+        allow(forecast_mock).to receive(:fetch!).and_raise(WeatherApi::FetchError, error_message)
+
+        get forecast_api_weather_path, params: { query: }
+
+        parsed_response = JSON.parse(response.body)
+
+        expect(parsed_response['message']).to eq error_message
+        expect(response).to have_http_status :internal_server_error
       end
     end
 
@@ -59,7 +73,7 @@ RSpec.describe '/api/weather' do
           subject
 
           expect(Rails.cache.read(cache_key)).to eq json_mock
-          expect(forecast_mock).to have_received(:fetch)
+          expect(forecast_mock).to have_received(:fetch!)
         end
       end
 
@@ -71,7 +85,7 @@ RSpec.describe '/api/weather' do
         it 'reads forecast json from the cache' do
           subject
 
-          expect(forecast_mock).not_to have_received(:fetch)
+          expect(forecast_mock).not_to have_received(:fetch!)
         end
 
         it 'returns json with cache_hit: true' do
