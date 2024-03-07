@@ -1,8 +1,7 @@
 module Api
   class WeatherController < ApplicationController
     CACHE_PREFIX = 'weather_api:forecast'.freeze
-
-    rescue_from ActionController::ParameterMissing, with: :bad_request
+    include ErrorHandler
 
     def forecast
       json = cached_api_forecast.merge(cache_hit: @cache_hit.present?)
@@ -10,10 +9,6 @@ module Api
     end
 
     private
-
-    def bad_request
-      render json: { message: 'One or more parameters missing' }, status: :bad_request
-    end
 
     def query_params
       params.require(:query)
