@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe WeatherApi::Forecast do
+RSpec.describe WeatherApi::Forecast do
   describe '#forecast' do
-    let(:query) { 94619 }
+    let(:query) { '33.1872,-117.564' }
     let(:subject) { described_class.new(query:).fetch }
 
-    it 'returns parsed response from weather api' do
+    it 'returns parsed json response from weather api' do
       response_mock = instance_double(HTTParty::Response)
       json_mock = {
         'location' => { 'name' => 'Oakland' },
