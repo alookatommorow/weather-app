@@ -19,6 +19,8 @@ Style/DoubleNegation:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
+Style/NumericLiterals:
+  Enabled: false
 Metrics/MethodLength:
   Enabled: false
 
