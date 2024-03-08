@@ -4,6 +4,8 @@
 
 Get worlwide weather! Use the input to select an address to view the current weather and 3-day forecast. Results for are cached by zip code (not all all addressed will have an associated zip code) for 30 minutes. A cache hit is indicated by a green checkmark in the UI.
 
+![app screenshot](https://github.com/alookatommorow/weather-app/blob/main/public/Screenshot%202024-03-08%20at%2010.21.00%20AM.png)
+
 Built with:
 
 - [Ruby on Rails](https://rubyonrails.org/)
