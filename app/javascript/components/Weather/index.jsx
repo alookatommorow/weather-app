@@ -12,23 +12,25 @@ export const Weather = () => {
   const [weather, setWeather] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const showError = error.length > 0;
+  const showWeather = !isLoading && weather !== undefined;
 
   const onSuccess = (response) => {
     setIsLoading(false);
     setWeather(response);
   }
 
+  const onError = (message) => {
+    setIsLoading(false);
+    setError(message);
+  }
+
   useEffect(() => {
     const fetchWeather = async () => {
       setIsLoading(true);
+      let url = `/api/weather/forecast?query=${query}`;
+      if (zipCode) url += `&zip_code=${zipCode}`;
 
-      const response = await request(
-        `/api/weather/forecast?query=${query}&zip_code=${zipCode}`,
-        {
-          onError: () => setError('Something went wrong'),
-          onSuccess,
-        },
-      );
+      const response = await request(url, { onError, onSuccess });
 
       return response;
     }
@@ -38,14 +40,14 @@ export const Weather = () => {
     }
   }, [query]);
 
-  const queryFromPlace = (place) => {
+  const placeCoordinates = (place) => {
     const lat = place.geometry?.location?.lat();
     const lng = place.geometry?.location?.lng();
 
     if (lat && lng) return `${lat},${lng}`;
   }
 
-  const zipCodeFromPlace = (place) => {
+  const placeZipCode = (place) => {
     const detail = place.address_components?.find(addressComponent =>
       addressComponent.types.includes(POSTAL_CODE)
     )
@@ -53,21 +55,25 @@ export const Weather = () => {
   }
 
   const handleSelect = (place) => {
-    const query = queryFromPlace(place);
-    if (!query) {
+    const coordinates = placeCoordinates(place);
+    if (!coordinates) {
       return setError('Please select a valid address');
     }
 
-    const zipCode = zipCodeFromPlace(place);
+    const zipCode = placeZipCode(place);
 
     setError('');
-    setQuery(query);
+    setQuery(coordinates);
     setZipCode(zipCode);
   }
 
   return (
     <>
-      <h1>Get your weather</h1>
+      <div className="header">
+        <img src="https://cdn.weatherapi.com/weather/64x64/day/176.png" alt="" />
+        <h1>Weather Time</h1>
+        <img src="https://cdn.weatherapi.com/weather/64x64/day/176.png" alt="" />
+      </div>
       <Autocomplete
         apiKey={process.env.REACT_APP_GOOGLE_KEY}
         onPlaceSelected={handleSelect}
@@ -77,7 +83,10 @@ export const Weather = () => {
       />
       {showError && <p className="error">{error}</p>}
       {isLoading && <p>Loading...</p>}
-      {weather && (
+      {showWeather && weather.cache_hit && (
+        <p className="cache">	&#x2705; Cache hit for zip code: {zipCode}</p>
+      )}
+      {showWeather && (
         <Results
           current={weather.current}
           forecast={weather.forecast.forecastday}
