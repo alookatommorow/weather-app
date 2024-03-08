@@ -3,11 +3,17 @@ module Api
     FORECAST_CACHE_PREFIX = 'weather_api:forecast'.freeze
     include ErrorHandler
 
+    # @return [Hash]
+    #   forecast JSON if successful api call or cache read
+    #   [boolean] cache_hit
+    #     indicates a successful cache read
+    # @return [Hash]
+    #   error message JSON if failed api call
+    #   Ex: { 'message' => 'Something went wrong' }
+    # @see WeatherApi::Forecast#fetch
     def forecast
       json = cached_api_forecast.merge(cache_hit: @cache_hit.present?)
       render json:
-    rescue WeatherApi::FetchError => e
-      render json: { message: e.message }, status: :internal_server_error
     end
 
     private
@@ -26,6 +32,7 @@ module Api
       "#{FORECAST_CACHE_PREFIX}:#{params[:zip_code]}"
     end
 
+    # caches forecast JSON by zip code for 30 minutes
     def cached_api_forecast
       return api_forecast if forecast_cache_key.blank?
 

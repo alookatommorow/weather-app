@@ -40,7 +40,7 @@ RSpec.describe '/api/weather' do
 
     context 'when fetch fails' do
       it 'returns 500 with error message' do
-        error_message = 'Fetch failed'
+        error_message = 'Something went wrong'
         allow(forecast_mock).to receive(:fetch!).and_raise(WeatherApi::FetchError, error_message)
 
         get forecast_api_weather_path, params: { query: }
