@@ -59,4 +59,4 @@ Run tests
 
 ## Notes
 
-Rails caching is turned off my default in development mode. To toggle chaching in development run `rails dev:cache`.
+Rails caching is turned off by default in development mode. To toggle chaching in development run `rails dev:cache`.
