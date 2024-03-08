@@ -1,6 +1,4 @@
 module WeatherApi
-  class FetchError < StandardError; end
-
   # Base class for making requests to 'http://api.weatherapi.com/v1'
   # Can be extended to fetch data from different API endpoints
   # @see API docs at https://www.weatherapi.com/docs/
